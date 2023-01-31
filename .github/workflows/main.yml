@@ -29,10 +29,12 @@ jobs:
         run: |
           echo "WEB_IMAGE=$(echo ${{env.WEB_IMAGE}} )" >> $GITHUB_ENV
           echo "NGINX_IMAGE=$(echo ${{env.NGINX_IMAGE}} )" >> $GITHUB_ENV
-      - name: Log in to GitHub Packages
-        run: echo ${PERSONAL_ACCESS_TOKEN} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
-        env:
-          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: Log into GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: Pull images
         run: |
           docker pull ${{ env.WEB_IMAGE }} || true
